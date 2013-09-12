@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class SecureSystem {
-	ReferenceMonitor refMon = new ReferenceMonitor();
+	static ReferenceMonitor refMon = new ReferenceMonitor();
+	static InstructionObject instrobj;
 
 	public static void main(String[] args) throws FileNotFoundException {
 
@@ -22,7 +23,8 @@ public class SecureSystem {
 		Scanner scan = new Scanner(args[0]);
 		while (scan.hasNextLine()) {
 			String curLine = scan.nextLine();
-			InstructionObject instrobj = new InstructionObject(curLine);
+			instrobj = new InstructionObject(curLine);
+			printState();
 		}
 
 		System.out.println("K DONE!");
@@ -30,10 +32,8 @@ public class SecureSystem {
 
 	public SecureSystem(String fileName) throws FileNotFoundException {
 		File file1 = new File(fileName);
-		Scanner scan = new Scanner(file1);
 		System.out.println("Reading from file: " + file1);
 		System.out.println();
-		scan.close();
 	}
 
 	void createSubject(String name, SecurityLevel secLev) {
@@ -43,6 +43,14 @@ public class SecureSystem {
 
 	public ReferenceMonitor getReferenceMonitor() {
 		return refMon;
+	}
+	
+	static void printState() {
+		if (instrobj.getInstruction().equals("BAD")) {
+			System.out.println("Bad Instruction");
+			System.out.println("The current state is: ");
+			System.out.println("LObj has value: ");
+		}
 	}
 
 }
