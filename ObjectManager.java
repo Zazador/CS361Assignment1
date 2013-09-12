@@ -1,11 +1,9 @@
+import java.util.HashMap;
 
 public class ObjectManager {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public ObjectManager() {
+		HashMap objectManager = new HashMap();
 
 	}
 

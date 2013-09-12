@@ -3,12 +3,13 @@ import java.util.*;
 
 public class ReferenceMonitor {
 
-	/**
-	 * @param args
-	 * @throws FileNotFoundException 
-	 */
-	public static void main(String[] args) throws FileNotFoundException {
+	public ReferenceMonitor() {
 
 	}
 
+	void createNewObject(String name, SecurityLevel secLev) {
+		HashMap<String, SecurityLevel> objectManager = new HashMap<String, SecurityLevel>();
+		objectManager.put(name, secLev);
+	}
+	
 }
