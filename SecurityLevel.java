@@ -1,13 +1,15 @@
 public class SecurityLevel {
-	static SecurityLevel LOW = new SecurityLevel(0);
+	
+	int domination;
 	static SecurityLevel HIGH = new SecurityLevel(1);
+	static SecurityLevel LOW = new SecurityLevel(0);
 
 	public SecurityLevel(int level) {
-		this.getDomination(level);
+		domination = level;
 	}
-
-	int getDomination(int level) {
-		return level;
+	
+	int getDomination() {
+		return domination;
 	}
 
 }

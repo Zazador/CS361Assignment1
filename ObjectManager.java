@@ -2,8 +2,8 @@ import java.util.HashMap;
 
 public class ObjectManager {
 
-	public ObjectManager() {
-		HashMap objectManager = new HashMap();
+	public HashMap<String, SecurityLevel> ObjectManager() {
+		return ReferenceMonitor.getObjectManager();
 	}
 
 }

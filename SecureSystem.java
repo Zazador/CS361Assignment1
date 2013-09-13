@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class SecureSystem {
-	static ReferenceMonitor refMon = new ReferenceMonitor();
+	ReferenceMonitor refMon = new ReferenceMonitor();
 	static InstructionObject instrobj;
+	static HashMap<String, SecurityLevel> subjectManager = new HashMap<String, SecurityLevel>();
 
 	public static void main(String[] args) throws FileNotFoundException {
 
 		SecureSystem sys = new SecureSystem(args[0]);
+		File file2 = new File(args[0]);
 
 		SecurityLevel low = SecurityLevel.LOW;
 		SecurityLevel high = SecurityLevel.HIGH;
@@ -17,17 +19,16 @@ public class SecureSystem {
 		sys.createSubject("Lyle", low);
 		sys.createSubject("Hal", high);
 
-		sys.getReferenceMonitor().createNewObject("Lobj", low);
-		sys.getReferenceMonitor().createNewObject("Hobj", high);
+		sys.getReferenceMonitor().createNewObject("LObj", low);
+		sys.getReferenceMonitor().createNewObject("HObj", high);
 
-		Scanner scan = new Scanner(args[0]);
+		Scanner scan = new Scanner(file2);
 		while (scan.hasNextLine()) {
 			String curLine = scan.nextLine();
 			instrobj = new InstructionObject(curLine);
 			printState();
 		}
-
-		System.out.println("K DONE!");
+		scan.close();
 	}
 
 	public SecureSystem(String fileName) throws FileNotFoundException {
@@ -37,20 +38,58 @@ public class SecureSystem {
 	}
 
 	void createSubject(String name, SecurityLevel secLev) {
-		HashMap<String, SecurityLevel> subjectManager = new HashMap<String, SecurityLevel>();
 		subjectManager.put(name, secLev);
+	}
+	
+	public static HashMap<String, SecurityLevel> getSubjectManager() {
+		return subjectManager;
 	}
 
 	public ReferenceMonitor getReferenceMonitor() {
 		return refMon;
 	}
-	
+
 	static void printState() {
 		if (instrobj.getInstruction().equals("BAD")) {
 			System.out.println("Bad Instruction");
 			System.out.println("The current state is: ");
-			System.out.println("LObj has value: ");
+			System.out.println("   LObj has value: "
+					+ ReferenceMonitor.getValueManager().get("LObj"));
+			System.out.println("   HObj has value: "
+					+ ReferenceMonitor.getValueManager().get("HObj"));
+			System.out.println("   Lyle has recently read: "
+					+ ReferenceMonitor.getReadManager().get("Lyle"));
+			System.out.println("   Hal has recently read: "
+					+ ReferenceMonitor.getReadManager().get("Hal"));
+			System.out.println();
+		}
+		else if (instrobj.getInstruction().equals("READ")) {
+			System.out.println(instrobj.getSubject() + " reads " + instrobj.getObject());
+			System.out.println("The current state is: ");
+			System.out.println("   LObj has value: "
+					+ ReferenceMonitor.getValueManager().get("LObj"));
+			System.out.println("   HObj has value: "
+					+ ReferenceMonitor.getValueManager().get("HObj"));
+			System.out.println("   Lyle has recently read: "
+					+ ReferenceMonitor.getReadManager().get("Lyle"));
+			System.out.println("   Hal has recently read: "
+					+ ReferenceMonitor.getReadManager().get("Hal"));
+			System.out.println();
+		}
+		else if (instrobj.getInstruction().equals("WRITE")) {
+			System.out.println(instrobj.getSubject() + " writes value " + instrobj.getValue() +
+					" to " + instrobj.getObject());
+			System.out.println("The current state is: ");
+			System.out.println("   LObj has value: "
+					+ ReferenceMonitor.getValueManager().get("LObj"));
+			System.out.println("   HObj has value: "
+					+ ReferenceMonitor.getValueManager().get("HObj"));
+			System.out.println("   Lyle has recently read: "
+					+ ReferenceMonitor.getReadManager().get("Lyle"));
+			System.out.println("   Hal has recently read: "
+					+ ReferenceMonitor.getReadManager().get("Hal"));
+			System.out.println();
 		}
 	}
+	}
 
-}
