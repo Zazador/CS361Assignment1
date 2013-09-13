@@ -1,68 +1,50 @@
-import java.io.*;
-import java.util.*;
-
 public class ReferenceMonitor {
-	
-static HashMap<String, SecurityLevel> objectManager = new HashMap<String, SecurityLevel>();
-static HashMap<String, Integer> valueManager = new HashMap<String, Integer>();
-static HashMap<String, Integer> readManager = new HashMap<String, Integer>();
 
 	public ReferenceMonitor() {
-		HashMap<String, SecurityLevel> objectManager;
-		HashMap<String, Integer> valueManager;
-		readManager.put("Hal", 0);
-		readManager.put("Lyle", 0);
+		// Initially add a blank Hal and Lyle to the read manager
+		ObjectManager.getReadManager().put("Hal", 0);
+		ObjectManager.getReadManager().put("Lyle", 0);
 	}
-	
+
+	// Create a new object within the object manager
 	void createNewObject(String name, SecurityLevel secLev) {
-		objectManager.put(name, secLev);
-		valueManager.put(name, 0);
+		ObjectManager.createNewObject(name, secLev);
 	}
-	
-	public static HashMap<String, SecurityLevel> getObjectManager() {
-		return objectManager;
-	}
-	
-	public static HashMap<String, Integer> getValueManager() {
-		return valueManager;
-	}
-	
-	public static HashMap<String, Integer> getReadManager() {
-		return readManager;
-	}
-	
+
+	// Check to see if the passed write instruction is safe based on security
+	// principles. If so, send to object manager for execution
 	static void writeExecute(InstructionObject instr) {
-		int val = instr.getValue();
 		String subj = instr.getSubject();
 		String obj = instr.getObject();
-		
+
 		SecurityLevel subjSec = SecureSystem.getSubjectManager().get(subj);
 		int subjSecLevel = subjSec.getDomination();
-		
-		SecurityLevel objSec = objectManager.get(obj);
+
+		SecurityLevel objSec = ObjectManager.getObjectManager().get(obj);
 		int objSecLevel = objSec.getDomination();
-		
+
 		if (subjSecLevel <= objSecLevel) {
-			valueManager.put(obj, val);
+			ObjectManager.writeExecute(instr);
 		}
 	}
-	
+
+	// Check to see if the passed read instruction is safe based on security
+	// principles. If so, send to object manager for execution
 	static void readExecute(InstructionObject instr) {
 		String subj = instr.getSubject();
 		String obj = instr.getObject();
-		
+
 		SecurityLevel subjSec = SecureSystem.getSubjectManager().get(subj);
 		int subjSecLevel = subjSec.getDomination();
-		
-		SecurityLevel objSec = objectManager.get(obj);
+
+		SecurityLevel objSec = ObjectManager.getObjectManager().get(obj);
 		int objSecLevel = objSec.getDomination();
-		
+
 		if (subjSecLevel >= objSecLevel) {
-			readManager.put(subj, valueManager.get(obj));
-		}
-		else {
-			readManager.put(subj, 0);
+			ObjectManager.readExecute(instr);
+		} else {
+			ObjectManager.badReadExecute(instr);
 		}
 	}
-	
+
 }
